@@ -6,7 +6,6 @@ import os
 import numpy as np
 from datetime import datetime
 import pandas as pd
-from email.message import EmailMessage
 import smtplib
 import threading
 # Initialize DB for admin users
@@ -36,7 +35,7 @@ def mark_attendance(name):
         existing = pd.read_excel("attendance.xlsx")
         df = pd.concat([existing, df], ignore_index=True)
     df.to_excel("attendance.xlsx", index=False)
-    threading.Thread(target=send_email_alert, args=(name,)).start()
+   
 def capture_and_save_face():
     def save_face_to_folder():
         name = name_entry.get()
@@ -83,22 +82,6 @@ def capture_and_save_face():
     name_entry = tk.Entry(win)
     name_entry.pack()
     tk.Button(win, text="Capture Face", command=save_face_to_folder).pack(pady=5)
-
-def send_email_alert(name):
-    try:
-        msg = EmailMessage()
-        msg.set_content(f"Attendance marked for: {name}")
-        msg["Subject"] = f"Attendance Alert - {name}"
-        msg["From"] = "satyamsingh62jnp@gmail.com"
-        msg["To"] = "attandance7@gmail.com"
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login("satyamsingh62jnp@gmail.com", "oilm khwk chyy gzdu")
-        server.send_message(msg)
-        server.quit()
-    except Exception as e:
-        print(f"Email error: {e}")
-
 def load_known_faces(path='faces'):
     images, names = [], []
     for file in os.listdir(path):
